@@ -1,0 +1,591 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d0d;color:#f0f0f0;font-family:'Segoe UI',Arial,sans-serif}
+.db{background:#0d0d0d;padding:20px;max-width:1100px;margin:0 auto}
+.antetitulo{font-size:11px;letter-spacing:2px;color:#5a8fc4;text-transform:uppercase;margin-bottom:6px}
+.titulo{font-size:26px;font-weight:700;color:#ffffff;line-height:1.2;margin-bottom:10px}
+.entradilla{font-size:13px;color:#a0a8b0;line-height:1.6;max-width:860px;margin-bottom:20px;border-left:3px solid #1e5fa0;padding-left:12px}
+.filtros{display:flex;flex-wrap:wrap;gap:10px;background:#141414;border:0.5px solid #2a2a2a;border-radius:10px;padding:14px 18px;margin-bottom:20px;align-items:flex-end}
+.filtro-group{display:flex;flex-direction:column;gap:4px}
+.filtro-label{font-size:11px;color:#6a7a8a;letter-spacing:1px;text-transform:uppercase}
+.filtro-group select,.filtro-group input{background:#1a1a1a;border:0.5px solid #333;color:#e0e0e0;border-radius:6px;padding:6px 10px;font-size:12px;min-width:160px}
+.filtro-group select:focus,.filtro-group input:focus{outline:none;border-color:#1e5fa0}
+.reset-btn{background:#1a2a3a;border:0.5px solid #1e5fa0;color:#5a8fc4;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;align-self:flex-end;margin-top:18px}
+.reset-btn:hover{background:#1e3a5a}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:#141414;border:0.5px solid #2a2a2a;border-radius:10px;padding:14px 16px}
+.kpi-icon{font-size:18px;color:#5a8fc4;margin-bottom:6px}
+.kpi-label{font-size:11px;color:#6a7a8a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.kpi-value{font-size:22px;font-weight:700;color:#ffffff}
+.kpi-sub{font-size:11px;color:#5a8fc4;margin-top:3px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.card{background:#141414;border:0.5px solid #2a2a2a;border-radius:10px;padding:16px}
+.card-title{font-size:12px;font-weight:600;color:#c0ccd8;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.8px}
+.card-subtitle{font-size:11px;color:#5a7a95;margin-bottom:14px}
+.full-card{background:#141414;border:0.5px solid #2a2a2a;border-radius:10px;padding:16px;margin-bottom:20px}
+.tooltip-box{position:absolute;background:#1a2535;border:0.5px solid #2e5fa0;border-radius:8px;padding:10px 14px;font-size:12px;color:#e0e0e0;pointer-events:none;display:none;z-index:100;min-width:200px;box-shadow:0 4px 16px rgba(0,0,0,0.6)}
+.tooltip-box strong{color:#5ab4f0;display:block;margin-bottom:4px;font-size:13px}
+.tooltip-row{display:flex;justify-content:space-between;gap:16px;margin-top:3px}
+.tooltip-row span:first-child{color:#8a9aaa}
+.tooltip-row span:last-child{color:#e0e0e0;font-weight:600}
+.var-pos{color:#4ec97a}
+.var-neg{color:#e05a5a}
+.bubble-wrap{position:relative;width:100%;height:260px}
+.bubble-svg{width:100%;height:100%}
+.legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#8a9aaa}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.line-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.theater-btn{background:#1a1a1a;border:0.5px solid #333;color:#8a9aaa;border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;transition:all 0.2s}
+.theater-btn.active{background:#1e3a5a;border-color:#1e5fa0;color:#5ab4f0}
+.credits{text-align:right;font-size:10px;color:#444;margin-top:20px;padding-top:12px;border-top:0.5px solid #2a2a2a}
+.credits span{color:#555}
+.hallazgo{background:#0e1a26;border-left:3px solid #1e5fa0;border-radius:0 8px 8px 0;padding:10px 14px;margin-top:12px;font-size:12px;color:#a0b8cc;line-height:1.5}
+.hallazgo strong{color:#5ab4f0}
+</style>
+
+<div class="db">
+  <div class="antetitulo"><i class="ti ti-masks-theater" aria-hidden="true"></i> Datos clave de la inversión dada a los teatros</div>
+  <div class="titulo">Encuéntrame en aquella sala: financiamiento de los teatros de La Candelaria</div>
+  <div class="entradilla">La Candelaria (comuna 10) es el centro patrimonial, histórico y cultural de Medellín. Allí convergen varios espacios representativos como museos, iglesias, bibliotecas y teatros. El centro posee casi el 40% de los 35 teatros que hay distribuidos en la ciudad, gran parte de ellos públicos pues surgen gracias a la asociación de colectivos y donde sostenerlo se convierte en un elemento fundamental para darle continuidad e impacto en el territorio.</div>
+
+  <div class="filtros">
+    <div class="filtro-group">
+      <span class="filtro-label"><i class="ti ti-building" aria-hidden="true"></i> Teatro</span>
+      <select id="sel-teatro">
+        <option value="all">Todos los teatros</option>
+      </select>
+    </div>
+    <div class="filtro-group">
+      <span class="filtro-label"><i class="ti ti-calendar" aria-hidden="true"></i> Año</span>
+      <select id="sel-anio">
+        <option value="all">Todos los años</option>
+      </select>
+    </div>
+    <div class="filtro-group">
+      <span class="filtro-label"><i class="ti ti-arrows-sort" aria-hidden="true"></i> Monto mínimo ($)</span>
+      <input type="number" id="inp-monto" placeholder="0" min="0" step="1000000">
+    </div>
+    <button class="reset-btn" onclick="resetFiltros()"><i class="ti ti-refresh" aria-hidden="true"></i> Restablecer</button>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="full-card">
+    <div class="card-title"><i class="ti ti-chart-line" aria-hidden="true"></i> Evolución temporal por teatro</div>
+    <div class="card-subtitle">Tendencia del monto otorgado por año — selecciona uno o varios teatros para comparar</div>
+    <div class="line-controls" id="line-controls"></div>
+    <div style="position:relative;width:100%;height:300px">
+      <canvas id="lineChart" role="img" aria-label="Gráfico de líneas con evolución temporal del monto otorgado por teatro entre 2016 y 2025">Datos de financiamiento 2016-2025.</canvas>
+      <div class="tooltip-box" id="line-tooltip"></div>
+    </div>
+  </div>
+
+  <div class="full-card">
+    <div class="card-title"><i class="ti ti-circle-dot" aria-hidden="true"></i> Distribución proporcional del financiamiento</div>
+    <div class="card-subtitle" id="bubble-subtitle">El Pequeño Teatro recibe y ha recibido más apoyos económicos que los 14 teatros que hay en La Candelaria</div>
+    <div class="bubble-wrap">
+      <svg class="bubble-svg" id="bubbleSvg" role="img" aria-label="Gráfico de burbujas proporcionales por monto total otorgado a cada teatro"></svg>
+    </div>
+    <div class="legend-row" id="bubble-legend"></div>
+    <div class="hallazgo" id="hallazgo-text"></div>
+  </div>
+
+  <div class="row2">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-trending-up" aria-hidden="true"></i> Monto por año (todos los teatros)</div>
+      <div class="card-subtitle">Total anual acumulado — filtro de teatro activo</div>
+      <div style="position:relative;width:100%;height:200px">
+        <canvas id="barAnio" role="img" aria-label="Gráfico de barras con total de inversión por año">Total por año.</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-chart-donut" aria-hidden="true"></i> Participación por teatro</div>
+      <div class="card-subtitle">Porcentaje del total histórico de inversión</div>
+      <div style="position:relative;width:100%;height:200px">
+        <canvas id="donut" role="img" aria-label="Gráfico de dona con participación porcentual de cada teatro">Participación por teatro.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="credits">
+    Mensaje original: <span>WAH</span> &nbsp;·&nbsp; Depuración de prompt: <span>Gemini</span> &nbsp;·&nbsp; Fuente: <span>Secretaría de Cultura</span>
+  </div>
+</div>
+
+<div id="bub-tooltip" class="tooltip-box"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const RAW = [
+  {teatro:"Matacandelas",anio:2016,monto:398038791},
+  {teatro:"Matacandelas",anio:2017,monto:90832775},
+  {teatro:"Matacandelas",anio:2018,monto:87661812},
+  {teatro:"Matacandelas",anio:2019,monto:96350670},
+  {teatro:"Matacandelas",anio:2020,monto:112679296},
+  {teatro:"Matacandelas",anio:2021,monto:100090400},
+  {teatro:"Matacandelas",anio:2022,monto:85623396},
+  {teatro:"Matacandelas",anio:2023,monto:293860738},
+  {teatro:"Matacandelas",anio:2024,monto:107422076},
+  {teatro:"Matacandelas",anio:2025,monto:101511929},
+  {teatro:"Pequeño Teatro",anio:2016,monto:380257074},
+  {teatro:"Pequeño Teatro",anio:2018,monto:95748672},
+  {teatro:"Pequeño Teatro",anio:2019,monto:85407030},
+  {teatro:"Pequeño Teatro",anio:2020,monto:422260554},
+  {teatro:"Pequeño Teatro",anio:2021,monto:97671860},
+  {teatro:"Pequeño Teatro",anio:2022,monto:118926604},
+  {teatro:"Pequeño Teatro",anio:2023,monto:405936040},
+  {teatro:"Pequeño Teatro",anio:2024,monto:92009740},
+  {teatro:"Pequeño Teatro",anio:2025,monto:75593990},
+  {teatro:"Of. Central de los Sueños",anio:2016,monto:67251770},
+  {teatro:"Of. Central de los Sueños",anio:2017,monto:82945590},
+  {teatro:"Of. Central de los Sueños",anio:2018,monto:85017280},
+  {teatro:"Of. Central de los Sueños",anio:2019,monto:133403500},
+  {teatro:"Of. Central de los Sueños",anio:2020,monto:240319700},
+  {teatro:"Of. Central de los Sueños",anio:2021,monto:143032500},
+  {teatro:"Of. Central de los Sueños",anio:2022,monto:84743670},
+  {teatro:"Of. Central de los Sueños",anio:2023,monto:145383200},
+  {teatro:"Of. Central de los Sueños",anio:2024,monto:133701100},
+  {teatro:"Of. Central de los Sueños",anio:2025,monto:130272200},
+  {teatro:"Teatro El Trueque",anio:2016,monto:48525360},
+  {teatro:"Teatro El Trueque",anio:2017,monto:84585020},
+  {teatro:"Teatro El Trueque",anio:2018,monto:104833300},
+  {teatro:"Teatro El Trueque",anio:2019,monto:91966390},
+  {teatro:"Teatro El Trueque",anio:2020,monto:94290990},
+  {teatro:"Teatro El Trueque",anio:2021,monto:93464150},
+  {teatro:"Teatro El Trueque",anio:2022,monto:73896690},
+  {teatro:"Teatro El Trueque",anio:2023,monto:83336370},
+  {teatro:"Teatro El Trueque",anio:2025,monto:853552200},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2016,monto:173600200},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2017,monto:164424000},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2018,monto:132863300},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2019,monto:171472100},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2020,monto:277627200},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2021,monto:292184100},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2022,monto:160583400},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2023,monto:240196000},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2024,monto:176345500},
+  {teatro:"Ateneo Porfirio Barba Jacob",anio:2025,monto:187591400},
+  {teatro:"Casa del Teatro",anio:2016,monto:72970780},
+  {teatro:"Casa del Teatro",anio:2017,monto:97477920},
+  {teatro:"Casa del Teatro",anio:2018,monto:85628030},
+  {teatro:"Casa del Teatro",anio:2019,monto:114668900},
+  {teatro:"Casa del Teatro",anio:2020,monto:104779800},
+  {teatro:"Casa del Teatro",anio:2021,monto:94695190},
+  {teatro:"Casa del Teatro",anio:2022,monto:85333090},
+  {teatro:"Casa del Teatro",anio:2023,monto:88238510},
+  {teatro:"Casa del Teatro",anio:2024,monto:94377640},
+  {teatro:"Casa del Teatro",anio:2025,monto:100792000},
+  {teatro:"Agité",anio:2018,monto:22500000},
+  {teatro:"Agité",anio:2019,monto:68169960},
+  {teatro:"Agité",anio:2020,monto:97498560},
+  {teatro:"Agité",anio:2021,monto:25000000},
+  {teatro:"Agité",anio:2022,monto:61580580},
+  {teatro:"Agité",anio:2023,monto:72612940},
+  {teatro:"Agité",anio:2024,monto:136046900},
+  {teatro:"Agité",anio:2025,monto:109272900},
+  {teatro:"Vivapalabra",anio:2016,monto:106159800},
+  {teatro:"Vivapalabra",anio:2018,monto:121099000},
+  {teatro:"Vivapalabra",anio:2019,monto:129107100},
+  {teatro:"Vivapalabra",anio:2020,monto:152226100},
+  {teatro:"Vivapalabra",anio:2021,monto:153571200},
+  {teatro:"Vivapalabra",anio:2022,monto:73307280},
+  {teatro:"Vivapalabra",anio:2023,monto:193737400},
+  {teatro:"Vivapalabra",anio:2024,monto:92348010},
+  {teatro:"Vivapalabra",anio:2025,monto:910189400},
+  {teatro:"La Rueda Flotante",anio:2017,monto:6450000},
+  {teatro:"La Rueda Flotante",anio:2018,monto:5000000},
+  {teatro:"La Rueda Flotante",anio:2019,monto:52600000},
+  {teatro:"La Rueda Flotante",anio:2020,monto:60000000},
+  {teatro:"La Rueda Flotante",anio:2021,monto:65000000},
+  {teatro:"La Rueda Flotante",anio:2023,monto:1235000000},
+  {teatro:"La Rueda Flotante",anio:2024,monto:114140600},
+  {teatro:"La Rueda Flotante",anio:2025,monto:115792700},
+  {teatro:"Teatro Popular",anio:2022,monto:110233100},
+  {teatro:"Teatro Popular",anio:2024,monto:96407260},
+  {teatro:"Teatro Popular",anio:2025,monto:282625400}
+];
+
+const COLORS = {
+  "Matacandelas":"#4a90d9",
+  "Pequeño Teatro":"#e05a5a",
+  "Of. Central de los Sueños":"#4ec97a",
+  "Teatro El Trueque":"#f5a623",
+  "Ateneo Porfirio Barba Jacob":"#9b6fdb",
+  "Casa del Teatro":"#5abccc",
+  "Agité":"#f06292",
+  "Vivapalabra":"#aed581",
+  "La Rueda Flotante":"#ffb74d",
+  "Teatro Popular":"#80cbc4"
+};
+
+const TEATROS = [...new Set(RAW.map(d=>d.teatro))];
+const ANIOS = [2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+
+let activeTeatros = new Set(TEATROS);
+let filtroAnio = "all";
+let filtroMonto = 0;
+
+function fmt(n){return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',minimumFractionDigits:0,maximumFractionDigits:0}).format(n)}
+function fmtK(n){
+  if(n>=1e9) return '$'+(n/1e9).toFixed(1)+'B';
+  if(n>=1e6) return '$'+(n/1e6).toFixed(0)+'M';
+  return '$'+n;
+}
+
+function getFiltered(){
+  return RAW.filter(d=>{
+    if(filtroAnio!=="all" && d.anio!=parseInt(filtroAnio)) return false;
+    if(d.monto < filtroMonto) return false;
+    return true;
+  });
+}
+
+function buildSelects(){
+  const st = document.getElementById('sel-teatro');
+  const sa = document.getElementById('sel-anio');
+  TEATROS.forEach(t=>{
+    const o=document.createElement('option');
+    o.value=t; o.textContent=t;
+    st.appendChild(o);
+  });
+  ANIOS.forEach(a=>{
+    const o=document.createElement('option');
+    o.value=a; o.textContent=a;
+    sa.appendChild(o);
+  });
+  st.onchange=()=>{
+    const v=st.value;
+    if(v==="all") activeTeatros=new Set(TEATROS);
+    else { activeTeatros=new Set([v]); updateLineButtons(); }
+    render();
+  };
+  sa.onchange=()=>{ filtroAnio=sa.value; render(); };
+  document.getElementById('inp-monto').oninput=(e)=>{ filtroMonto=parseFloat(e.target.value)||0; render(); };
+}
+
+function resetFiltros(){
+  document.getElementById('sel-teatro').value="all";
+  document.getElementById('sel-anio').value="all";
+  document.getElementById('inp-monto').value="";
+  filtroAnio="all"; filtroMonto=0;
+  activeTeatros=new Set(TEATROS);
+  TEATROS.forEach(t=>{
+    const btn=document.querySelector(`.theater-btn[data-t="${t}"]`);
+    if(btn) btn.classList.add('active');
+  });
+  render();
+}
+
+function buildLineButtons(){
+  const cont=document.getElementById('line-controls');
+  cont.innerHTML='';
+  TEATROS.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='theater-btn active';
+    btn.dataset.t=t;
+    btn.style.borderColor=COLORS[t];
+    btn.innerHTML=`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${COLORS[t]};margin-right:5px"></span>${t}`;
+    btn.onclick=()=>{
+      if(activeTeatros.has(t)){
+        if(activeTeatros.size===1) return;
+        activeTeatros.delete(t);
+        btn.classList.remove('active');
+      } else {
+        activeTeatros.add(t);
+        btn.classList.add('active');
+      }
+      render();
+    };
+    cont.appendChild(btn);
+  });
+}
+
+function updateLineButtons(){
+  TEATROS.forEach(t=>{
+    const btn=document.querySelector(`.theater-btn[data-t="${t}"]`);
+    if(!btn) return;
+    if(activeTeatros.has(t)) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+}
+
+let lineChart=null, barChart=null, donutChart=null;
+
+function renderKPIs(data){
+  const total=data.reduce((s,d)=>s+d.monto,0);
+  const teatrosActivos=[...new Set(data.map(d=>d.teatro))];
+  const porAnio={};
+  data.forEach(d=>{ porAnio[d.anio]=(porAnio[d.anio]||0)+d.monto; });
+  const anios=Object.keys(porAnio).sort();
+  const ultimoAnio=anios[anios.length-1];
+  const penultimoAnio=anios[anios.length-2];
+  let tendencia="";
+  if(ultimoAnio && penultimoAnio){
+    const v=(porAnio[ultimoAnio]/porAnio[penultimoAnio]-1)*100;
+    tendencia=`${v>=0?'▲':'▼'} ${Math.abs(v).toFixed(1)}% vs ${penultimoAnio}`;
+  }
+  const maxAnio=Object.entries(porAnio).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('kpis').innerHTML=`
+    <div class="kpi">
+      <div class="kpi-icon"><i class="ti ti-coins" aria-hidden="true"></i></div>
+      <div class="kpi-label">Total invertido</div>
+      <div class="kpi-value" style="font-size:17px">${fmt(total)}</div>
+      <div class="kpi-sub">${anios[0]}–${ultimoAnio}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon"><i class="ti ti-building" aria-hidden="true"></i></div>
+      <div class="kpi-label">Teatros activos</div>
+      <div class="kpi-value">${teatrosActivos.length}</div>
+      <div class="kpi-sub">de ${TEATROS.length} en el registro</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon"><i class="ti ti-calendar-stats" aria-hidden="true"></i></div>
+      <div class="kpi-label">Año con mayor inversión</div>
+      <div class="kpi-value">${maxAnio?maxAnio[0]:'—'}</div>
+      <div class="kpi-sub">${maxAnio?fmtK(maxAnio[1]):''}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-icon"><i class="ti ti-trending-up" aria-hidden="true"></i></div>
+      <div class="kpi-label">Tendencia reciente</div>
+      <div class="kpi-value" style="font-size:16px;color:${tendencia.startsWith('▲')?'#4ec97a':'#e05a5a'}">${tendencia||'—'}</div>
+      <div class="kpi-sub">último año disponible</div>
+    </div>
+  `;
+}
+
+function renderLine(data){
+  const datasets=TEATROS.filter(t=>activeTeatros.has(t)).map(t=>{
+    const byAnio={};
+    data.filter(d=>d.teatro===t).forEach(d=>{ byAnio[d.anio]=d.monto; });
+    const vals=ANIOS.map(a=>byAnio[a]||null);
+    return {
+      label:t,
+      data:vals,
+      borderColor:COLORS[t],
+      backgroundColor:COLORS[t]+'22',
+      borderWidth:activeTeatros.size>1?1.5:2.5,
+      pointRadius:4,
+      pointHoverRadius:7,
+      tension:0.3,
+      spanGaps:true
+    };
+  });
+
+  if(lineChart){ lineChart.destroy(); lineChart=null; }
+  const ctx=document.getElementById('lineChart').getContext('2d');
+  lineChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:ANIOS.map(String),datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          enabled:false,
+          external(ctx2){
+            const tip=document.getElementById('line-tooltip');
+            if(ctx2.tooltip.opacity===0){tip.style.display='none';return;}
+            const {dataPoints}=ctx2.tooltip;
+            const anio=dataPoints[0].label;
+            const anioIdx=ANIOS.indexOf(parseInt(anio));
+            let html=`<strong>Año ${anio}</strong>`;
+            dataPoints.forEach(p=>{
+              const t=p.dataset.label;
+              const v=p.raw;
+              if(v===null) return;
+              const prev=anioIdx>0?(() => {
+                const prevData=RAW.filter(d=>d.teatro===t&&d.anio===ANIOS[anioIdx-1]);
+                return prevData.length?prevData.reduce((s,d)=>s+d.monto,0):null;
+              })():null;
+              const varStr=prev!==null?`${((v/prev-1)*100)>=0?'<span class="var-pos">':'<span class="var-neg">'}${((v/prev-1)*100)>=0?'+':''}${((v/prev-1)*100).toFixed(1)}%</span>`:'<span style="color:#6a7a8a">primer año</span>';
+              html+=`<div class="tooltip-row"><span style="color:${COLORS[t]};font-weight:600">${t}</span><span>${fmt(v)}</span></div>`;
+              html+=`<div class="tooltip-row"><span style="color:#6a7a8a;font-size:11px">Var. interanual</span><span style="font-size:11px">${varStr}</span></div>`;
+            });
+            tip.innerHTML=html;
+            tip.style.display='block';
+            const wrap=ctx2.chart.canvas.parentElement;
+            const wrapRect=wrap.getBoundingClientRect();
+            let x=ctx2.tooltip.caretX+10;
+            let y=ctx2.tooltip.caretY-20;
+            if(x+220>wrapRect.width) x=ctx2.tooltip.caretX-230;
+            tip.style.left=x+'px';
+            tip.style.top=y+'px';
+          }
+        }
+      },
+      scales:{
+        x:{ticks:{color:'#6a7a8a',font:{size:11}},grid:{color:'#1e1e1e'}},
+        y:{ticks:{color:'#6a7a8a',font:{size:10},callback:v=>fmtK(v)},grid:{color:'#1e1e1e'}}
+      }
+    }
+  });
+}
+
+function renderBubble(data){
+  const svg=document.getElementById('bubbleSvg');
+  const W=svg.getBoundingClientRect().width||680;
+  const H=260;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML='';
+
+  const totales={};
+  data.forEach(d=>{ totales[d.teatro]=(totales[d.teatro]||0)+d.monto; });
+  const entries=Object.entries(totales).sort((a,b)=>b[1]-a[1]);
+  const maxV=entries[0][1];
+  const minR=14, maxR=70;
+  const bubbles=entries.map(([t,v])=>{
+    const r=minR+(Math.sqrt(v)/Math.sqrt(maxV))*(maxR-minR);
+    return {t,v,r};
+  });
+
+  const cx=W/2, cy=H/2;
+  const angles=bubbles.map((_,i)=>(i/bubbles.length)*2*Math.PI-Math.PI/2);
+  const spreadR=Math.min(W,H)*0.33;
+  const placed=bubbles.map((b,i)=>{
+    if(i===0) return {...b,x:cx,y:cy};
+    return {...b,x:cx+Math.cos(angles[i])*spreadR,y:cy+Math.sin(angles[i])*spreadR};
+  });
+
+  const legend=document.getElementById('bubble-legend');
+  legend.innerHTML='';
+
+  placed.forEach(b=>{
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.style.cursor='pointer';
+
+    const circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',b.x);
+    circle.setAttribute('cy',b.y);
+    circle.setAttribute('r',b.r);
+    circle.setAttribute('fill',COLORS[b.t]+'55');
+    circle.setAttribute('stroke',COLORS[b.t]);
+    circle.setAttribute('stroke-width','1.5');
+
+    const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x',b.x);
+    text.setAttribute('y',b.y);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('dominant-baseline','middle');
+    text.setAttribute('font-size',b.r>35?'11':'9');
+    text.setAttribute('fill','#e0e0e0');
+    text.setAttribute('font-weight','600');
+    const short=b.t.length>14?b.t.substring(0,12)+'…':b.t;
+    text.textContent=short;
+
+    const val=document.createElementNS('http://www.w3.org/2000/svg','text');
+    val.setAttribute('x',b.x);
+    val.setAttribute('y',b.y+14);
+    val.setAttribute('text-anchor','middle');
+    val.setAttribute('font-size','8');
+    val.setAttribute('fill',COLORS[b.t]);
+    val.textContent=fmtK(b.v);
+
+    g.appendChild(circle);
+    g.appendChild(text);
+    if(b.r>28) g.appendChild(val);
+
+    g.addEventListener('mouseenter',e=>{
+      const tip=document.getElementById('bub-tooltip');
+      tip.innerHTML=`<strong>${b.t}</strong><div class="tooltip-row"><span>Total histórico</span><span>${fmt(b.v)}</span></div>`;
+      tip.style.display='block';
+      tip.style.left=(e.pageX+12)+'px';
+      tip.style.top=(e.pageY-30)+'px';
+    });
+    g.addEventListener('mousemove',e=>{
+      const tip=document.getElementById('bub-tooltip');
+      tip.style.left=(e.pageX+12)+'px';
+      tip.style.top=(e.pageY-30)+'px';
+    });
+    g.addEventListener('mouseleave',()=>{ document.getElementById('bub-tooltip').style.display='none'; });
+
+    svg.appendChild(g);
+
+    const li=document.createElement('div');
+    li.className='legend-item';
+    li.innerHTML=`<span class="legend-dot" style="background:${COLORS[b.t]}"></span>${b.t}: ${fmtK(b.v)}`;
+    legend.appendChild(li);
+  });
+
+  const top1=placed[0];
+  const top2=placed[1];
+  document.getElementById('hallazgo-text').innerHTML=
+    `<strong>Hallazgo:</strong> Con los filtros actuales, <strong style="color:#5ab4f0">${top1.t}</strong> lidera con ${fmt(top1.v)} en inversión acumulada — seguido por <strong style="color:${COLORS[top2.t]}">${top2.t}</strong> con ${fmt(top2.v)}. La brecha entre el primero y el último es de ${fmt(top1.v-placed[placed.length-1].v)}.`;
+}
+
+function renderBar(data){
+  const porAnio={};
+  ANIOS.forEach(a=>porAnio[a]=0);
+  data.forEach(d=>{ if(porAnio[d.anio]!==undefined) porAnio[d.anio]+=d.monto; });
+  const vals=ANIOS.map(a=>porAnio[a]);
+
+  if(barChart){ barChart.destroy(); barChart=null; }
+  const ctx=document.getElementById('barAnio').getContext('2d');
+  barChart=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:ANIOS.map(String),
+      datasets:[{
+        label:'Total anual',
+        data:vals,
+        backgroundColor:vals.map((_,i)=>i===vals.length-1?'#4a90d9aa':'#4a90d944'),
+        borderColor:vals.map((_,i)=>i===vals.length-1?'#4a90d9':'#4a90d966'),
+        borderWidth:1
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)}}},
+      scales:{
+        x:{ticks:{color:'#6a7a8a',font:{size:10}},grid:{display:false}},
+        y:{ticks:{color:'#6a7a8a',font:{size:10},callback:v=>fmtK(v)},grid:{color:'#1e1e1e'}}
+      }
+    }
+  });
+}
+
+function renderDonut(data){
+  const totales={};
+  data.forEach(d=>{ totales[d.teatro]=(totales[d.teatro]||0)+d.monto; });
+  const entries=Object.entries(totales).sort((a,b)=>b[1]-a[1]);
+  const total=entries.reduce((s,[,v])=>s+v,0);
+
+  if(donutChart){ donutChart.destroy(); donutChart=null; }
+  const ctx=document.getElementById('donut').getContext('2d');
+  donutChart=new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:entries.map(([t])=>t),
+      datasets:[{
+        data:entries.map(([,v])=>v),
+        backgroundColor:entries.map(([t])=>COLORS[t]+'cc'),
+        borderColor:entries.map(([t])=>COLORS[t]),
+        borderWidth:1
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      cutout:'60%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>`${c.label}: ${((c.raw/total)*100).toFixed(1)}% · ${fmtK(c.raw)}`}}
+      }
+    }
+  });
+}
+
+function render(){
+  const filtered=getFiltered().filter(d=>activeTeatros.has(d.teatro));
+  renderKPIs(filtered);
+  renderLine(filtered);
+  renderBubble(filtered);
+  renderBar(filtered);
+  renderDonut(filtered);
+}
+
+buildSelects();
+buildLineButtons();
+setTimeout(render,100);
+</script>
